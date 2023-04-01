@@ -121,19 +121,18 @@ struct Process {
         return this->calculPriority() < other.calculPriority();
     }
 
-    // Чтобы Process можно было выводить в offstream
-    friend std::ostream &operator<<(std::ostream &output,
-                                    const Process &process) {
-        output << "param_priority_ : " << process.param_priority_
-               << ", worked_time_: " << process.worked_time_
-               << ", total_time_: " << process.total_time_ << std::endl;
-
-        return output;
-    }
-
   private:
     int calculPriority() const { return param_priority_ * (worked_time_ + 1); }
 };
+
+// Чтобы Process можно было выводить в offstream
+std::ostream &operator<<(std::ostream &output, const Process &process) {
+    output << "param_priority_ : " << process.param_priority_
+           << ", worked_time_: " << process.worked_time_
+           << ", total_time_: " << process.total_time_ << std::endl;
+
+    return output;
+}
 
 template <typename T> struct DefaultComparator {
     bool operator()(const T &l, const T &r) const { return l < r; }
