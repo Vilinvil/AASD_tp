@@ -1,6 +1,6 @@
-// Здесь реализована структура динамический массив, похожий на слайс в гошке.
-
 #include <iostream>
+
+// Здесь реализована структура динамический массив, похожий на слайс в гошке.
 
 template <typename T> T max(T a, T b) { return a > b ? a : b; };
 
@@ -74,20 +74,20 @@ template <typename T> class mySlice {
     // Возвращает емкость слайса
     size_t capSl() const { return cap; }
 
-    // Вывести слайс
-    void printSl() const {
-        for (size_t i = 0; i < this->lenSl(); i++) {
-            std::cout << this->buf[i] << " ";
-        }
-
-        std::cout << std::endl;
-    }
-
   private:
     T *buf;
     size_t len;
     size_t cap;
 };
+
+// Вывести слайс
+template <typename T> void printSl(mySlice<T> &sl) {
+    for (size_t i = 0; i < sl.lenSl(); i++) {
+        std::cout << sl.buf[i] << " ";
+    }
+
+    std::cout << std::endl;
+}
 
 int main() {
     mySlice<int> s;
