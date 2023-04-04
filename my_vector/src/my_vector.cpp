@@ -14,76 +14,81 @@ template <typename T> void copyBuf(T *buf1, T *buf2, size_t count) {
 // Vой динамический массив
 template <typename T> class mySlice {
   public:
-    mySlice() : buf(nullptr), len(0), cap(0) {}
-    mySlice(T *buf, size_t len, size_t cap) : buf(buf), len(len), cap(cap) {}
+    mySlice() : buf_(nullptr), len_(0), cap_(0) {}
+    mySlice(T *buf, size_t len, size_t cap) : buf_(buf), len_(len), cap_(cap) {}
 
-    ~mySlice() { delete[] buf; }
+    ~mySlice() { delete[] buf_; }
 
     mySlice(const mySlice &other)
-        : buf(new T[other.cap]), len(other.len), cap(other.cap) {
-        copyBuf(other.buf, this->buf, other.len);
+        : buf_(new T[other.cap_]), len_(other.len_), cap_(other.cap_) {
+        copyBuf(other.buf_, this->buf_, other.len_);
     }
 
     mySlice &operator=(const mySlice &other) {
         if (this != &other) {
-            T *tmp = new T[other.cap];
-            copyBuf(other.buf, tmp, other.len);
-            delete[] this->buf;
+            T *tmp = new T[other.cap_];
+            copyBuf(other.buf_, tmp, other.len_);
+            delete[] this->buf_;
 
-            this->buf = tmp;
-            this->len = other.len;
-            this->cap = other.cap;
+            this->buf_ = tmp;
+            this->len_ = other.len_;
+            this->cap_ = other.cap_;
         }
         return *this;
     }
 
     void grow(size_t new_cap) {
-        if (new_cap > cap) {
+        if (new_cap > cap_) {
             T *new_buf = new T[new_cap];
-            copyBuf(this->buf, new_buf, len);
-            delete[] this->buf;
+            copyBuf(this->buf_, new_buf, len_);
+            delete[] this->buf_;
 
-            this->buf = new_buf;
-            this->cap = new_cap;
+            this->buf_ = new_buf;
+            this->cap_ = new_cap;
         }
     }
 
     // Добавление элемента в слайс
     void push(const T &val) {
-        if (this->len == this->cap) {
-            grow(max(this->cap * 2, (size_t) 1));
+        if (this->len_ == this->cap_) {
+            grow(max(this->cap_ * 2, (size_t) 1));
         }
 
-        this->buf[this->len] = val;
-        this->len++;
+        this->buf_[this->len_] = val;
+        this->len_++;
     }
 
     // Удаление элемента из слайса
     void pop() {
-        if (this->len > 0) {
-            this->len--;
+        if (this->len_ > 0) {
+            this->len_--;
         }
     }
 
-    // Получить элемент по индексу
-    T &operator[](size_t idx) { return buf[idx]; }
+    // Получить элемент по индексу. Не безопасная операция
+    T &operator[](size_t idx) {
+        if (idx >= len_ && idx < 0) {
+            throw std::runtime_error("index out of range")
+        }
+        return buf_[idx];
+    }
 
     // Возвращает кол-во элементов в слайсе
-    size_t lenSl() const { return len; }
+    size_t lenSl() const { return len_; }
 
     // Возвращает емкость слайса
-    size_t capSl() const { return cap; }
+    size_t capSl() const { return cap_; }
 
   private:
-    T *buf;
-    size_t len;
-    size_t cap;
+    T *buf_;
+    size_t len_;
+    size_t cap_;
 };
 
 // Вывести слайс
 template <typename T> void printSl(mySlice<T> &sl) {
     for (size_t i = 0; i < sl.lenSl(); i++) {
-        std::cout << sl.buf[i] << " ";
+        std::cout << sl.buf_[i] << " ";
     }
 
     std::cout << std::endl;
@@ -98,15 +103,15 @@ int main() {
 
     std::cout << "s: ";
     s.pop();
-    s.printSl();
+    printSl(s);
 
     mySlice<int> s_new(s);
     std::cout << "s_new: ";
-    s_new.printSl();
+    printSl(s_new);
 
     mySlice<int> s_copy = s;
     std::cout << "s_copy: ";
-    s_copy.printSl();
+    printSl(s_copy);
 
     return 0;
 }
