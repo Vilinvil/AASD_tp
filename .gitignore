@@ -1,2 +1,4 @@
-**/sem*
-**/main
+sem*
+main
+.vscode
+build*
