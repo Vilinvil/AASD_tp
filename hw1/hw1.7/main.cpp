@@ -144,14 +144,6 @@ void PartionDigit(mySlice<T> &sl, int left, int right, int max_digit,
         }
     }
 
-    // Условие на случай, если не было ни одного элемента с верным условием
-    // comp(...), т.е если i не указывает на начало области с элементами
-    // строго comp(...) чем разделитель. В таком случае не нужно все элементы
-    // передать в сортировку большей части
-    // if (!comp(sl[it1], pivot, max_digit)) {
-    //     it1 = left - 1;
-    // }
-
     PartionDigit(sl, left, it1, max_digit - 1, comp);
     PartionDigit(sl, it1 + 1, right, max_digit - 1, comp);
 
