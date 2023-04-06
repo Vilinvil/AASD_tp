@@ -11,7 +11,7 @@ template <typename T> void copyBuf(T *buf1, T *buf2, size_t count) {
     }
 };
 
-// Vой динамический массив
+// Мой динамический массив
 template <typename T> class mySlice {
   public:
     mySlice() : buf_(nullptr), len_(0), cap_(0) {}
@@ -66,12 +66,7 @@ template <typename T> class mySlice {
     }
 
     // Получить элемент по индексу. Не безопасная операция
-    T &operator[](size_t idx) {
-        if (idx >= len_ && idx < 0) {
-            throw std::runtime_error("index out of range")
-        }
-        return buf_[idx];
-    }
+    T &operator[](size_t idx) { return buf_[idx]; }
 
     // Возвращает кол-во элементов в слайсе
     size_t lenSl() const { return len_; }
