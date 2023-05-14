@@ -10,6 +10,8 @@
 #include <stack>
 #include <utility>
 
+namespace {
+
 template <typename T> struct DefaultComparator {
     bool operator()(const T &l, const T &r) const {
         if (l < r) {
@@ -184,6 +186,8 @@ template <typename T> void write(TreeNode<T> *node) {
 //     }
 //     std::cout << "testLogic OK";
 // };
+
+}   // namespace
 
 int main(int argc, char *argv[]) {
     // testLogic();
