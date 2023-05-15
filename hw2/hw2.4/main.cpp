@@ -23,16 +23,14 @@ template <typename T> struct DefaultComparator {
     }
 };
 
-template <typename Key, typename Value,
-          typename Comparator = DefaultComparator<Key>>
+template <typename Key, typename Comparator = DefaultComparator<Key>>
 class AVLTree {
     struct TreeNode {
       public:
-        TreeNode(const Key &key, const Value &val)
-            : val_(val), key_(key), left_(nullptr), right_(nullptr),
-              count_nodes_(1), height_(1){};
+        TreeNode(const Key &key)
+            : key_(key), left_(nullptr), right_(nullptr), count_nodes_(1),
+              height_(1){};
         Key key_;
-        Value val_;
 
         size_t count_nodes_;
         uint8_t height_;
@@ -43,13 +41,11 @@ class AVLTree {
   public:
     AVLTree(Comparator comp = Comparator()) : root_(nullptr), comp_(comp){};
 
-    Value *find(const Key &key) { return findAux(key, root_); };
-    void insert(const Key &key, const Value &val) {
-        root_ = insertAux(key, val, root_);
-    };
+    const Key *find(const Key &key) { return findAux(key, root_); };
+    void insert(const Key &key) { root_ = insertAux(key, root_); };
     void erase(const Key &key) { root_ = eraseAux(key, root_); };
 
-    const Value *kthStatistic(size_t k) { return kthStatisticAux(k, root_); }
+    const Key *kthStatistic(size_t k) { return kthStatisticAux(k, root_); }
 
     ~AVLTree() {
         post_order([](TreeNode *node) { delete node; });
@@ -67,7 +63,7 @@ class AVLTree {
         return node->count_nodes_;
     }
 
-    const Value *kthStatisticAux(size_t k, const TreeNode *node) {
+    const Key *kthStatisticAux(size_t k, const TreeNode *node) {
         if (!node || k >= node->count_nodes_) {
             return nullptr;
         }
@@ -77,7 +73,7 @@ class AVLTree {
             return kthStatisticAux(k, node->left_);
         }
         if (left_count == k) {
-            return &node->val_;
+            return &node->key_;
         }
 
         return kthStatisticAux(k - left_count - 1, node->right_);
@@ -111,7 +107,7 @@ class AVLTree {
         }
     }
 
-    Value *findAux(const Key &key, TreeNode *node) {
+    const Key *findAux(const Key &key, TreeNode *node) {
         if (!node) {
             return nullptr;
         }
@@ -128,23 +124,23 @@ class AVLTree {
         }
 
         // key == node->key
-        return &node->val;
+        return &node->key_;
     }
 
-    TreeNode *insertAux(const Key &key, const Value &val, TreeNode *node) {
+    TreeNode *insertAux(const Key &key, TreeNode *node) {
         if (!node) {
-            return new TreeNode(key, val);
+            return new TreeNode(key);
         }
 
         int res_comp = comp_(key, node->key_);
 
         // key < node->key
         if (res_comp == -1) {
-            node->left_ = insertAux(key, val, node->left_);
+            node->left_ = insertAux(key, node->left_);
         }
         // key > node->key
         if (res_comp == 1) {
-            node->right_ = insertAux(key, val, node->right_);
+            node->right_ = insertAux(key, node->right_);
         }
 
         // key == node->key
@@ -263,7 +259,7 @@ class AVLTree {
 void run(std::istream &input, std::ostream &output) {
     size_t n;
     input >> n;
-    AVLTree<int, int> tree;
+    AVLTree<int> tree;
     for (size_t i = 0; i < n; i++) {
         long long operation;
         input >> operation;
@@ -271,7 +267,7 @@ void run(std::istream &input, std::ostream &output) {
             throw std::runtime_error("in run: zero number prohibited");
         }
         if (operation > 0) {
-            tree.insert(operation, operation);
+            tree.insert(operation);
         }
         if (operation < 0) {
             tree.erase(operation * (-1));
