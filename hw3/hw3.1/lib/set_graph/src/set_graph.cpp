@@ -11,7 +11,7 @@ SetGraph::SetGraph(const IGraph &igraph) {
     for (int i = 0; i < vertices_count_; i++) {
         auto next_vec = igraph.GetNextVertices(i);
         for (int next : next_vec) {
-            graph_[i].insert(next);
+            AddEdge(i, next);
         }
     }
 };

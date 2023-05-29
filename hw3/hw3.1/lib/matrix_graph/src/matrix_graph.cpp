@@ -15,7 +15,7 @@ MatrixGraph::MatrixGraph(const IGraph &igraph) {
         graph_[i].resize(vertices_count_);
         auto next_vec = igraph.GetNextVertices(i);
         for (int next : next_vec) {
-            graph_[i][next] = 1;
+            AddEdge(i, next);
         }
     }
 };

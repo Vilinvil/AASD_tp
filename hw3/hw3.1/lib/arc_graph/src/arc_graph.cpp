@@ -9,7 +9,7 @@ ArcGraph::ArcGraph(const IGraph &igraph) {
     for (int i = 0; i < vertices_count_; i++) {
         auto next_vec = igraph.GetNextVertices(i);
         for (int next : next_vec) {
-            graph_.push_back(std::pair<int, int>(i, next));
+            AddEdge(i, next);
         }
     }
 };
