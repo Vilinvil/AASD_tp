@@ -19,6 +19,5 @@ class ListGraph : public IGraph {
   private:
     std::vector<std::vector<int>> graph_;
 
-    // std::vector<std::vector<int>> reverse_graph_;
     int vertices_count_;
 };
