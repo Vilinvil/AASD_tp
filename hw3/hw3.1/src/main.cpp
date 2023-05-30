@@ -19,22 +19,23 @@ static std::set<int> setFromVec(const std::vector<int> &vec) {
     return result;
 }
 
-int main() {
+void testMainLogic() {
     int size = 10;
     ListGraph graph_list(size);
 
     graph_list.AddEdge(0, 1);
     graph_list.AddEdge(0, 2);
     graph_list.AddEdge(0, 4);
+    graph_list.AddEdge(0, 6);
+    graph_list.AddEdge(0, 7);
+
     graph_list.AddEdge(1, 2);
     graph_list.AddEdge(1, 3);
     graph_list.AddEdge(1, 5);
-    graph_list.AddEdge(2, 4);
 
-    graph_list.AddEdge(0, 7);
-    graph_list.AddEdge(0, 6);
-    graph_list.AddEdge(6, 9);
+    graph_list.AddEdge(2, 4);
     graph_list.AddEdge(4, 8);
+    graph_list.AddEdge(6, 9);
 
     bfs(graph_list, [](int v) { std::cout << "bfs: " << v << std::endl; });
     std::cout << "________" << std::endl;
@@ -76,27 +77,7 @@ int main() {
     }
 }
 
-// // with recursion, may be stack overflow
-// void dfs_aux(const IGraph &graph, int v, std::vector<bool> &visited,
-//              void (*callback)(int v)) {
-//     visited[v] = true;
-//     callback(v);
-
-//     std::vector<int> children = graph.GetNextVertices(v);
-//     for (int i = 0; i < children.size(); i++) {
-//         if (!visited[children[i]]) {
-//             dfs_aux(graph, children[i], visited, callback);
-//         }
-//     }
-// }
-
-// // with recursion, may be stack overflow
-// void dfs(const IGraph &graph, void (*callback)(int v)) {
-//     std::vector<bool> visited(graph.VerticesCount(), false);
-
-//     for (int i = 0; i < graph.VerticesCount(); i++) {
-//         if (!visited[i]) {
-//             dfs_aux(graph, i, visited, callback);
-//         }
-//     }
-// };
+int main() {
+    testMainLogic();
+    return 0;
+}
