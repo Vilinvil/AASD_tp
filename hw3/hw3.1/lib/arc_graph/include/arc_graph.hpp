@@ -2,6 +2,7 @@
 
 #include <vector>
 
+namespace a_graph {
 class ArcGraph : public IGraph {
   public:
     ArcGraph(int vertices_count);
@@ -19,3 +20,4 @@ class ArcGraph : public IGraph {
     int vertices_count_;
     std::vector<std::pair<int, int>> graph_;
 };
+}   // namespace a_graph

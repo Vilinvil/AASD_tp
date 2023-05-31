@@ -1,8 +1,9 @@
 #include "list_graph.hpp"
 
+namespace l_graph {
+
 ListGraph::ListGraph(int vertices_count) : vertices_count_(vertices_count) {
     graph_.resize(vertices_count);
-    // reverse_graph_.resize(vertices_count);
 };
 
 ListGraph::ListGraph(const IGraph &igraph) {
@@ -13,10 +14,7 @@ ListGraph::ListGraph(const IGraph &igraph) {
     }
 };
 
-void ListGraph::AddEdge(int from, int to) {
-    graph_[from].push_back(to);
-    // reverse_graph_[to].push_back(from);
-};
+void ListGraph::AddEdge(int from, int to) { graph_[from].push_back(to); };
 
 int ListGraph::VerticesCount() const { return vertices_count_; };
 
@@ -42,3 +40,4 @@ std::vector<int> ListGraph::GetPrevVertices(int vertex) const {
 
     return result;
 };
+}   // namespace l_graph

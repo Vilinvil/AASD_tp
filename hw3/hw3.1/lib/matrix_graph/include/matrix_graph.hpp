@@ -2,6 +2,7 @@
 
 #include <vector>
 
+namespace m_graph {
 class MatrixGraph : public IGraph {
   public:
     MatrixGraph(int verticeces_count);
@@ -20,3 +21,4 @@ class MatrixGraph : public IGraph {
     int vertices_count_;
     std::vector<std::vector<int>> graph_;
 };
+}

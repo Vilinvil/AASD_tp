@@ -1,5 +1,6 @@
 #include "matrix_graph.hpp"
 
+namespace m_graph {
 MatrixGraph::MatrixGraph(int verticeces_count)
     : vertices_count_(verticeces_count) {
     graph_.resize(verticeces_count);
@@ -45,3 +46,4 @@ std::vector<int> MatrixGraph::GetPrevVertices(int vertex) const {
 
     return result;
 };
+}   // namespace m_graph

@@ -2,6 +2,7 @@
 
 #include <utility>
 
+namespace a_graph {
 ArcGraph::ArcGraph(int vertices_count) : vertices_count_(vertices_count){};
 
 ArcGraph::ArcGraph(const IGraph &igraph) {
@@ -41,3 +42,4 @@ std::vector<int> ArcGraph::GetPrevVertices(int vertex) const {
 
     return result;
 };
+}   // namespace a_graph

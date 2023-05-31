@@ -3,6 +3,7 @@
 #include <set>
 #include <vector>
 
+namespace s_graph {
 class SetGraph : public IGraph {
   public:
     SetGraph(int vertices_count);
@@ -21,3 +22,4 @@ class SetGraph : public IGraph {
     int vertices_count_;
     std::vector<std::set<int>> graph_;
 };
+}   // namespace s_graph

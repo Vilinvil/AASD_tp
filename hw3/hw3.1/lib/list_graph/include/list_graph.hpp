@@ -2,6 +2,8 @@
 
 #include <vector>
 
+namespace l_graph {
+// may be add reverse_graph for fast GetPrevVertices
 class ListGraph : public IGraph {
   public:
     ListGraph(int vertices_count);
@@ -21,3 +23,4 @@ class ListGraph : public IGraph {
 
     int vertices_count_;
 };
+}   // namespace l_graph

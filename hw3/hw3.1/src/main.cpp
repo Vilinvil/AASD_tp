@@ -1,3 +1,34 @@
+// Дан базовый интерфейс для представления ориентированного графа : struct
+// IGraph {
+//     virtual ~IGraph() {}
+
+//     // Добавление ребра от from к to.
+//     virtual void AddEdge(int from, int to) = 0;
+
+//     virtual int VerticesCount() const = 0;
+
+//     virtual std::vector<int> GetNextVertices(int vertex) const = 0;
+//     virtual std::vector<int> GetPrevVertices(int vertex) const = 0;
+// };
+
+// Необходимо написать несколько реализаций интерфейса
+//     : ListGraph,
+//       хранящий граф в виде массива списков смежности,
+//       MatrixGraph,
+//       хранящий граф в виде матрицы смежности,
+//       SetGraph,
+//       хранящий граф в виде массива хэш -
+//           таблиц / сбалансированных деревьев поиска,
+//       ArcGraph,
+//       хранящий граф в виде одного массива пар{from, to}.Также
+//           необходимо реализовать конструктор,
+//       принимающий const IGraph
+//           &.Такой конструктор должен скопировать переданный граф в
+//           создаваемый
+//               объект.Для каждого класса создавайте отдельные h и cpp файлы
+//                   .Число вершин графа задается в конструкторе каждой
+//                   реализации.
+
 #include "arc_graph.hpp"
 #include "igraph.hpp"
 #include "list_graph.hpp"
@@ -10,6 +41,7 @@
 #include <sstream>
 #include <vector>
 
+namespace {
 static std::set<int> setFromVec(const std::vector<int> &vec) {
     std::set<int> result;
     for (int i : vec) {
@@ -21,7 +53,7 @@ static std::set<int> setFromVec(const std::vector<int> &vec) {
 
 void testMainLogic() {
     int size = 10;
-    ListGraph graph_list(size);
+    l_graph::ListGraph graph_list(size);
 
     graph_list.AddEdge(0, 1);
     graph_list.AddEdge(0, 2);
@@ -40,15 +72,15 @@ void testMainLogic() {
     bfs(graph_list, [](int v) { std::cout << "bfs: " << v << std::endl; });
     std::cout << "________" << std::endl;
 
-    MatrixGraph graph_matrix = MatrixGraph(graph_list);
+    m_graph::MatrixGraph graph_matrix = m_graph::MatrixGraph(graph_list);
     bfs(graph_matrix, [](int v) { std::cout << "bfs: " << v << std::endl; });
     std::cout << "________" << std::endl;
 
-    SetGraph graph_set = SetGraph(graph_matrix);
+    s_graph::SetGraph graph_set = s_graph::SetGraph(graph_matrix);
     bfs(graph_set, [](int v) { std::cout << "bfs: " << v << std::endl; });
     std::cout << "________" << std::endl;
 
-    ArcGraph graph_arc = ArcGraph(graph_set);
+    a_graph::ArcGraph graph_arc = a_graph::ArcGraph(graph_set);
     bfs(graph_arc, [](int v) { std::cout << "bfs: " << v << std::endl; });
     std::cout << "________" << std::endl;
 
@@ -75,7 +107,10 @@ void testMainLogic() {
         assert(prev_m == prev_s);
         assert(prev_s == prev_a);
     }
+    std::cout << "testMainLogic() OK" << std::endl;
 }
+
+}   // namespace
 
 int main() {
     testMainLogic();

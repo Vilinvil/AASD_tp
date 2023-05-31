@@ -1,3 +1,14 @@
+// Дан невзвешенный неориентированный граф. В графе может быть несколько
+// кратчайших путей между какими-то вершинами. Найдите количество различных
+// кратчайших путей между заданными вершинами. Требования: сложность O(V+E).
+// Формат ввода.
+// v: кол-во вершин (макс. 50000),
+// n: кол-во ребер (макс. 200000),
+// n пар реберных вершин,
+// пара вершин u, w для запроса.
+// Формат вывода.
+// Количество кратчайших путей от u к w.
+
 #include <iostream>
 #include <queue>
 #include <sstream>
@@ -5,6 +16,7 @@
 #include <string>
 #include <vector>
 
+namespace {
 struct IGraph {
     virtual ~IGraph(){};
 
@@ -125,6 +137,7 @@ void run(std::istream &in, std::ostream &out) {
     int result = calculCountPath(l_graph, from_path, to_path);
     out << result;
 }
+}   // namespace
 
 int main() {
     try {

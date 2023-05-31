@@ -1,8 +1,8 @@
 #include "set_graph.hpp"
 
+namespace s_graph {
 SetGraph::SetGraph(int vertices_count) : vertices_count_(vertices_count) {
     graph_.resize(vertices_count);
-    // reverse_graph_.resize(vertices_count);
 };
 
 SetGraph::SetGraph(const IGraph &igraph) {
@@ -41,3 +41,4 @@ std::vector<int> SetGraph::GetPrevVertices(int vertex) const {
 
     return result;
 };
+}   // namespace s_graph
