@@ -1,4 +1,5 @@
 **/sem*
 **/main
 **/a.out
-.vscode
+**/.vscode
+**/build
