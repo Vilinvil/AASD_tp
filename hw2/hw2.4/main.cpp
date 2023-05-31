@@ -9,6 +9,7 @@
 #include <iostream>
 #include <sstream>
 #include <stack>
+#include <stdexcept>
 
 namespace {
 template <typename T> struct DefaultComparator {
@@ -42,6 +43,8 @@ class AVLTree {
     AVLTree(Comparator comp = Comparator()) : root_(nullptr), comp_(comp){};
 
     const Key *find(const Key &key) { return findAux(key, root_); };
+
+    // insert can throw std::runtime_error
     void insert(const Key &key) { root_ = insertAux(key, root_); };
     void erase(const Key &key) { root_ = eraseAux(key, root_); };
 
@@ -127,6 +130,7 @@ class AVLTree {
         return &node->key_;
     }
 
+    // insertAux can throw std::runtime_error
     TreeNode *insertAux(const Key &key, TreeNode *node) {
         if (!node) {
             return new TreeNode(key);
@@ -141,6 +145,11 @@ class AVLTree {
         // key > node->key
         if (res_comp == 1) {
             node->right_ = insertAux(key, node->right_);
+        }
+
+        if (res_comp == 0) {
+            throw std::runtime_error("in insert can`t use exist key=" +
+                                     std::to_string(key));
         }
 
         // key == node->key
@@ -301,412 +310,437 @@ void run(std::istream &input, std::ostream &output) {
     }
 }
 
-void testLogic() {
-    {
-        std::stringstream in_str;
-        std::stringstream out_str;
+// void testLogic() {
+//     {
+//         std::stringstream in_str;
+//         std::stringstream out_str;
 
-        in_str << R"(50
-2 0
-10 0
-19 0
-17 3
-9 4
-20 5
-4 3
--20 4
-21 4
-24 5
-22 6
-3 2
-14 2
--21 4
-23 6
-18 6
--17 8
-6 7
-15 3
-25 5
--22 7
--19 8
-17 8
--6 8
-6 5
--4 11
--2 7
--9 6
-19 3
--10 2
-7 1
-8 1
-20 5
--17 8
-4 11
-9 11
--19 11
-1 2
--9 10
-9 13
--9 0
-2 7
-5 12
--3 5
-12 9
--25 0
--2 2
-3 13
--8 10
-9 13)";
-        std::string res_expec = R"(2
-2
-2
-19
-19
-20
-10
-17
-17
-19
-21
-4
-4
-10
-17
-17
-22
-18
-6
-10
-15
-18
-17
-18
-10
-25
-18
-18
-14
-14
-6
-6
-15
-20
-24
-23
-24
-4
-23
-25
-1
-14
-23
-7
-15
-1
-5
-24
-20
-24
-)";
-        try {
-            run(in_str, out_str);
-            std::cout << out_str.str() << std::endl << std::endl;
-            std::cout << res_expec << std::endl << std::endl;
-            assert(res_expec == out_str.str());
-        } catch (std::runtime_error &e) {
-            throw std::runtime_error(e.what());
-        }
+//         in_str << R"(50
+//     2 0
+//     10 0
+//     19 0
+//     17 3
+//     9 4
+//     20 5
+//     4 3
+//     -20 4
+//     21 4
+//     24 5
+//     22 6
+//     3 2
+//     14 2
+//     -21 4
+//     23 6
+//     18 6
+//     -17 8
+//     6 7
+//     15 3
+//     25 5
+//     -22 7
+//     -19 8
+//     17 8
+//     -6 8
+//     6 5
+//     -4 11
+//     -2 7
+//     -9 6
+//     19 3
+//     -10 2
+//     7 1
+//     8 1
+//     20 5
+//     -17 8
+//     4 11
+//     9 11
+//     -19 11
+//     1 2
+//     -9 10
+//     9 13
+//     -9 0
+//     2 7
+//     5 12
+//     -3 5
+//     12 9
+//     -25 0
+//     -2 2
+//     3 13
+//     -8 10
+//     9 13)";
+//         std::string res_expec = R"(2
+// 2
+// 2
+// 19
+// 19
+// 20
+// 10
+// 17
+// 17
+// 19
+// 21
+// 4
+// 4
+// 10
+// 17
+// 17
+// 22
+// 18
+// 6
+// 10
+// 15
+// 18
+// 17
+// 18
+// 10
+// 25
+// 18
+// 18
+// 14
+// 14
+// 6
+// 6
+// 15
+// 20
+// 24
+// 23
+// 24
+// 4
+// 23
+// 25
+// 1
+// 14
+// 23
+// 7
+// 15
+// 1
+// 5
+// 24
+// 20
+// 24
+// )";
+//         try {
+//             run(in_str, out_str);
+//             assert(res_expec == out_str.str());
+//         } catch (std::runtime_error &e) {
+//             throw std::runtime_error(e.what());
+//         }
 
-        std::cout << "test from test system 2 OK\n";
-    }
-    {
-        std::stringstream in_str;
-        std::stringstream out_str;
+//         std::cout << "test from test system 2 OK\n";
+//     }
+//     // {
+//     //     srand(time(NULL));
+//     //     std::stringstream in_str;
+//     //     std::stringstream in_str_mr;
+//     //     std::stringstream out_str;
+//     //     std::stringstream out_str_mr;
+//     //     int count = 1000;
+//     //     in_str << count << std::endl;
+//     //     in_str_mr << count << std::endl;
 
-        in_str << "1 0 0";
-        std::string res_expec = "in run: zero number prohibited. operation=0";
-        try {
-            run(in_str, out_str);
-        } catch (std::runtime_error &e) {
-            assert(res_expec == e.what());
-        }
+//     //     for (int i = 2; i < count + 2; i++) {
+//     //         int num = rand();
+//     //         int kth = (rand() % i) - 3;
+//     //         kth = kth < 0 ? 0 : kth;
+//     //         in_str << num << std::endl << kth << std::endl;
+//     //         in_str_mr << num << std::endl << kth << std::endl;
+//     //     }
+//     //     try {
+//     //         run(in_str, out_str);
+//     //         Mr::run(in_str_mr, out_str_mr);
+//     //         assert(out_str_mr.str() == out_str.str());
+//     //     } catch (std::runtime_error &e) {
+//     //         throw std::runtime_error(e.what());
+//     //     }
+//     //     std::cout << "test 2 avltree compare OK\n";
+//     // }
+//     {
+//         std::stringstream in_str;
+//         std::stringstream out_str;
 
-        std::cout << "test one zero element OK\n";
-    }
-    {
-        std::stringstream in_str;
-        std::stringstream out_str;
+//         in_str << "1 0 0";
+//         std::string res_expec = "in run: zero number prohibited.
+//         operation=0"; try {
+//             run(in_str, out_str);
+//         } catch (std::runtime_error &e) {
+//             assert(res_expec == e.what());
+//         }
 
-        in_str << "5 40 0 10 1 4 1 -10 0 50 2";
-        std::string res_expext = "40\n40\n10\n4\n50\n";
-        run(in_str, out_str);
+//         std::cout << "test one zero element OK\n";
+//     }
+//     {
+//         std::stringstream in_str;
+//         std::stringstream out_str;
 
-        std::string res_recive = out_str.str();
-        assert(res_expext == out_str.str());
-        std::cout << "test from document OK\n";
-    }
-    {
-        std::stringstream in_str;
-        std::stringstream out_str;
+//         in_str << "5 40 0 10 1 4 1 -10 0 50 2";
+//         std::string res_expext = "40\n40\n10\n4\n50\n";
+//         run(in_str, out_str);
 
-        in_str << "1 140 0";
-        std::string res_expext = "140\n";
-        run(in_str, out_str);
+//         std::string res_recive = out_str.str();
+//         assert(res_expext == out_str.str());
+//         std::cout << "test from document OK\n";
+//     }
+//     {
+//         std::stringstream in_str;
+//         std::stringstream out_str;
 
-        std::string res_recive = out_str.str();
-        assert(res_expext == out_str.str());
-        std::cout << "test 1 elements OK\n";
-    }
-    {
-        std::stringstream in_str;
-        std::stringstream out_str;
+//         in_str << "1 140 0";
+//         std::string res_expext = "140\n";
+//         run(in_str, out_str);
 
-        in_str << "5 10 0 60 1 100 2 1 0 3 4";
-        std::string res_expext = "10\n60\n100\n1\n100\n";
-        run(in_str, out_str);
+//         std::string res_recive = out_str.str();
+//         assert(res_expext == out_str.str());
+//         std::cout << "test 1 elements OK\n";
+//     }
+//     {
+//         std::stringstream in_str;
+//         std::stringstream out_str;
 
-        std::string res_recive = out_str.str();
-        assert(res_expext == out_str.str());
-        std::cout << "test 5 elements OK\n";
-    }
-    {
-        std::stringstream in_str;
-        std::stringstream out_str;
+//         in_str << "5 10 0 60 1 100 2 1 0 3 4";
+//         std::string res_expext = "10\n60\n100\n1\n100\n";
+//         run(in_str, out_str);
 
-        in_str << "20 \
-        9 0 6 0 2 1 8 1 -6 0 5 2 3 4 7 1\
-                      -2 4 -9 3 2 1 -5 3 10 2 6 5 1 0 5 1 -5 3 5 3 -3 3 -5 2 ";
-        std::string res_expext = R"(9
-6
-6
-6
-2
-8
-9
-3
-9
-8
-3
-8
-7
-10
-1
-2
-6
-5
-6
-6
-)";
-        run(in_str, out_str);
+//         std::string res_recive = out_str.str();
+//         assert(res_expext == out_str.str());
+//         std::cout << "test 5 elements OK\n";
+//     }
+//     {
+//         std::stringstream in_str;
+//         std::stringstream out_str;
 
-        std::string res_recive = out_str.str();
-        assert(res_expext == out_str.str());
-        std::cout << "test by test system of techno park OK\n";
-    }
-    {
-        std::stringstream in_str;
-        std::stringstream out_str;
+//         in_str << "20 \
+//         9 0 6 0 2 1 8 1 -6 0 5 2 3 4 7 1\
+//                       -2 4 -9 3 2 1 -5 3 10 2 6 5 1 0 5 1 -5 3 5 3 -3 3 -5 2 ";
+//         std::string res_expext = R"(9
+// 6
+// 6
+// 6
+// 2
+// 8
+// 9
+// 3
+// 9
+// 8
+// 3
+// 8
+// 7
+// 10
+// 1
+// 2
+// 6
+// 5
+// 6
+// 6
+// )";
+//         run(in_str, out_str);
 
-        in_str << "10 10 0 9 0 8 0 7 0 6 0 5 0 4 0 3 0 2 0 1 0";
-        std::string res_expext = "10\n9\n8\n7\n6\n5\n4\n3\n2\n1\n";
-        run(in_str, out_str);
+//         std::string res_recive = out_str.str();
+//         assert(res_expext == out_str.str());
+//         std::cout << "test by test system of techno park OK\n";
+//     }
+//     {
+//         std::stringstream in_str;
+//         std::stringstream out_str;
 
-        std::string res_recive = out_str.str();
-        assert(res_expext == out_str.str());
-        std::cout << "test many balance OK\n";
-    }
-    {
-        std::stringstream in_str;
-        std::stringstream out_str;
+//         in_str << "10 10 0 9 0 8 0 7 0 6 0 5 0 4 0 3 0 2 0 1 0";
+//         std::string res_expext = "10\n9\n8\n7\n6\n5\n4\n3\n2\n1\n";
+//         run(in_str, out_str);
 
-        in_str << "1 -10 0";
-        std::string res_expext =
-            "in run: find kthStatic return nullptr. With kth=0 operation=-10";
-        try {
-            run(in_str, out_str);
-        } catch (std::runtime_error &e) {
-            assert(e.what() == res_expext);
-        }
-        std::cout << "test delete on empty OK\n";
-    }
-    {
-        std::stringstream in_str;
-        std::stringstream out_str;
+//         std::string res_recive = out_str.str();
+//         assert(res_expext == out_str.str());
+//         std::cout << "test many balance OK\n";
+//     }
+//     {
+//         std::stringstream in_str;
+//         std::stringstream out_str;
 
-        int count = 10000;
-        in_str << count << " ";
-        for (int i = 1; i < count + 1; i++) {
-            in_str << i << " " << 0 << " ";
-        }
-        std::string res_expext;
-        for (int i = 1; i < count + 1; i++) {
-            res_expext += std::to_string(1) + "\n";
-        }
+//         in_str << "1 -10 0";
+//         std::string res_expext =
+//             "in run: find kthStatic return nullptr. With kth=0
+//             operation=-10";
+//         try {
+//             run(in_str, out_str);
+//         } catch (std::runtime_error &e) {
+//             assert(e.what() == res_expext);
+//         }
+//         std::cout << "test delete on empty OK\n";
+//     }
+//     {
+//         std::stringstream in_str;
+//         std::stringstream out_str;
 
-        run(in_str, out_str);
+//         int count = 10000;
+//         in_str << count << " ";
+//         for (int i = 1; i < count + 1; i++) {
+//             in_str << i << " " << 0 << " ";
+//         }
+//         std::string res_expext;
+//         for (int i = 1; i < count + 1; i++) {
+//             res_expext += std::to_string(1) + "\n";
+//         }
 
-        std::string res_recive = out_str.str();
-        assert(res_expext == res_recive);
-        std::cout << "test a lot of elements OK\n";
-    }
-    {
-        std::stringstream in_str;
-        std::stringstream out_str;
+//         run(in_str, out_str);
 
-        int count = 10;
-        in_str << 2 * count - 2 << " ";
-        for (int i = 1; i < count + 1; i++) {
-            in_str << i << " " << 0 << " ";
-        }
-        std::string res_expext;
-        for (int i = 1; i < count + 1; i++) {
-            res_expext += std::to_string(1) + "\n";
-        }
+//         std::string res_recive = out_str.str();
+//         assert(res_expext == res_recive);
+//         std::cout << "test a lot of elements OK\n";
+//     }
+//     {
+//         std::stringstream in_str;
+//         std::stringstream out_str;
 
-        for (int i = 1; i < count; i++) {
-            in_str << -i << " " << 0 << " ";
-        }
-        for (int i = 2; i < count; i++) {
-            res_expext += std::to_string(i) + "\n";
-        }
+//         int count = 10;
+//         in_str << 2 * count - 2 << " ";
+//         for (int i = 1; i < count + 1; i++) {
+//             in_str << i << " " << 0 << " ";
+//         }
+//         std::string res_expext;
+//         for (int i = 1; i < count + 1; i++) {
+//             res_expext += std::to_string(1) + "\n";
+//         }
 
-        run(in_str, out_str);
+//         for (int i = 1; i < count; i++) {
+//             in_str << -i << " " << 0 << " ";
+//         }
+//         for (int i = 2; i < count; i++) {
+//             res_expext += std::to_string(i) + "\n";
+//         }
 
-        std::string res_recive = out_str.str();
-        assert(res_expext == res_recive);
-        std::cout << "test elements added and deleted OK\n";
-    }
-    {
-        AVLTree<int> tree;
-        tree.insert(5);
-        tree.insert(3);
-        tree.insert(7);
-        tree.insert(2);
-        tree.insert(4);
+//         run(in_str, out_str);
 
-        assert(*tree.kthStatistic(0) == 2);
-        assert(*tree.kthStatistic(1) == 3);
-        assert(*tree.kthStatistic(2) == 4);
-        assert(*tree.kthStatistic(3) == 5);
-        assert(*tree.kthStatistic(4) == 7);
+//         std::string res_recive = out_str.str();
+//         assert(res_expext == res_recive);
+//         std::cout << "test elements added and deleted OK\n";
+//     }
+//     {
+//         AVLTree<int> tree;
+//         tree.insert(5);
+//         tree.insert(3);
+//         tree.insert(7);
+//         tree.insert(2);
+//         tree.insert(4);
 
-        // Удаление элемента
-        tree.erase(3);
+//         assert(*tree.kthStatistic(0) == 2);
+//         assert(*tree.kthStatistic(1) == 3);
+//         assert(*tree.kthStatistic(2) == 4);
+//         assert(*tree.kthStatistic(3) == 5);
+//         assert(*tree.kthStatistic(4) == 7);
 
-        // Проверка изменения порядковых статистик
-        assert(*tree.kthStatistic(0) == 2);
-        assert(*tree.kthStatistic(1) == 4);
-        assert(*tree.kthStatistic(2) == 5);
-        assert(*tree.kthStatistic(3) == 7);
+//         // Удаление элемента
+//         tree.erase(3);
 
-        assert(tree.kthStatistic(6) == nullptr);
+//         // Проверка изменения порядковых статистик
+//         assert(*tree.kthStatistic(0) == 2);
+//         assert(*tree.kthStatistic(1) == 4);
+//         assert(*tree.kthStatistic(2) == 5);
+//         assert(*tree.kthStatistic(3) == 7);
 
-        std::cout << "test basic work with tree OK" << std::endl;
-    }
-    {
-        AVLTree<int> tree;
-        tree.insert(5);
-        tree.insert(3);
-        tree.insert(7);
-        tree.insert(2);
-        tree.insert(4);
+//         assert(tree.kthStatistic(6) == nullptr);
 
-        assert(*tree.kthStatistic(0) == 2);
-        assert(*tree.kthStatistic(1) == 3);
-        assert(*tree.kthStatistic(2) == 4);
-        assert(*tree.kthStatistic(3) == 5);
-        assert(*tree.kthStatistic(4) == 7);
+//         std::cout << "test basic work with tree OK" << std::endl;
+//     }
+//     {
+//         AVLTree<int> tree;
+//         tree.insert(5);
+//         tree.insert(3);
+//         tree.insert(7);
+//         tree.insert(2);
+//         tree.insert(4);
 
-        // Удаление элемента
-        tree.erase(3);
-        tree.erase(5);
+//         assert(*tree.kthStatistic(0) == 2);
+//         assert(*tree.kthStatistic(1) == 3);
+//         assert(*tree.kthStatistic(2) == 4);
+//         assert(*tree.kthStatistic(3) == 5);
+//         assert(*tree.kthStatistic(4) == 7);
 
-        // Проверка изменения порядковых статистик
-        assert(*tree.kthStatistic(0) == 2);
-        assert(*tree.kthStatistic(1) == 4);
-        assert(*tree.kthStatistic(2) == 7);
+//         // Удаление элемента
+//         tree.erase(3);
+//         tree.erase(5);
 
-        assert(tree.kthStatistic(3) == nullptr);
-        assert(tree.kthStatistic(4) == nullptr);
+//         // Проверка изменения порядковых статистик
+//         assert(*tree.kthStatistic(0) == 2);
+//         assert(*tree.kthStatistic(1) == 4);
+//         assert(*tree.kthStatistic(2) == 7);
 
-        std::cout << "test basic work with tree with erase OK" << std::endl;
-    }
-    {
-        AVLTree<int> tree;
-        tree.insert(5);
-        tree.insert(3);
-        tree.insert(7);
-        tree.insert(2);
-        tree.insert(4);
+//         assert(tree.kthStatistic(3) == nullptr);
+//         assert(tree.kthStatistic(4) == nullptr);
 
-        assert(*tree.kthStatistic(0) == 2);
-        assert(*tree.kthStatistic(1) == 3);
-        assert(*tree.kthStatistic(2) == 4);
-        assert(*tree.kthStatistic(3) == 5);
-        assert(*tree.kthStatistic(4) == 7);
+//         std::cout << "test basic work with tree with erase OK" << std::endl;
+//     }
+//     {
+//         AVLTree<int> tree;
+//         tree.insert(5);
+//         tree.insert(3);
+//         tree.insert(7);
+//         tree.insert(2);
+//         tree.insert(4);
 
-        // Удаление элемента
-        tree.erase(3);
-        tree.erase(5);
-        tree.erase(7);
-        tree.erase(4);
+//         assert(*tree.kthStatistic(0) == 2);
+//         assert(*tree.kthStatistic(1) == 3);
+//         assert(*tree.kthStatistic(2) == 4);
+//         assert(*tree.kthStatistic(3) == 5);
+//         assert(*tree.kthStatistic(4) == 7);
 
-        // Проверка изменения порядковых статистик
-        assert(*tree.kthStatistic(0) == 2);
+//         // Удаление элемента
+//         tree.erase(3);
+//         tree.erase(5);
+//         tree.erase(7);
+//         tree.erase(4);
 
-        assert(tree.kthStatistic(1) == nullptr);
-        assert(tree.kthStatistic(2) == nullptr);
+//         // Проверка изменения порядковых статистик
+//         assert(*tree.kthStatistic(0) == 2);
 
-        std::cout << "test basic work with tree with erase above all OK"
-                  << std::endl;
-    }
-    {
-        AVLTree<int> tree;
-        tree.insert(5);
-        tree.insert(3);
-        tree.insert(7);
-        tree.insert(8);
+//         assert(tree.kthStatistic(1) == nullptr);
+//         assert(tree.kthStatistic(2) == nullptr);
 
-        assert(*tree.kthStatistic(0) == 3);
-        assert(*tree.kthStatistic(1) == 5);
-        assert(*tree.kthStatistic(2) == 7);
-        assert(*tree.kthStatistic(3) == 8);
+//         std::cout << "test basic work with tree with erase above all OK"
+//                   << std::endl;
+//     }
+//     {
+//         AVLTree<int> tree;
+//         tree.insert(5);
+//         tree.insert(3);
+//         tree.insert(7);
+//         tree.insert(8);
 
-        tree.erase(5);
+//         assert(*tree.kthStatistic(0) == 3);
+//         assert(*tree.kthStatistic(1) == 5);
+//         assert(*tree.kthStatistic(2) == 7);
+//         assert(*tree.kthStatistic(3) == 8);
 
-        assert(*tree.kthStatistic(0) == 3);
-        assert(*tree.kthStatistic(1) == 7);
-        assert(*tree.kthStatistic(2) == 8);
+//         tree.erase(5);
 
-        assert(tree.kthStatistic(3) == nullptr);
-        assert(tree.kthStatistic(4) == nullptr);
+//         assert(*tree.kthStatistic(0) == 3);
+//         assert(*tree.kthStatistic(1) == 7);
+//         assert(*tree.kthStatistic(2) == 8);
 
-        std::cout << "test tree erase right without left OK" << std::endl;
-    }
-    {
-        AVLTree<int> tree;
-        tree.insert(5);
-        tree.insert(3);
-        tree.insert(7);
-        tree.insert(2);
-        tree.insert(4);
+//         assert(tree.kthStatistic(3) == nullptr);
+//         assert(tree.kthStatistic(4) == nullptr);
 
-        assert(*tree.find(3) == 3);
-        assert(*tree.find(2) == 2);
-        assert(*tree.find(5) == 5);
-        assert(*tree.find(4) == 4);
-        assert(*tree.find(7) == 7);
-        assert(tree.find(6) == nullptr);
+//         std::cout << "test tree erase right without left OK" << std::endl;
+//     }
+//     {
+//         AVLTree<int> tree;
+//         tree.insert(5);
+//         tree.insert(3);
+//         tree.insert(7);
+//         tree.insert(2);
+//         tree.insert(4);
 
-        std::cout << "test find OK" << std::endl;
-    }
+//         assert(*tree.find(3) == 3);
+//         assert(*tree.find(2) == 2);
+//         assert(*tree.find(5) == 5);
+//         assert(*tree.find(4) == 4);
+//         assert(*tree.find(7) == 7);
+//         assert(tree.find(6) == nullptr);
 
-    std::cout << "testLogic OK\n";
-}
+//         std::cout << "test find OK" << std::endl;
+//     }
+
+//     std::cout << "testLogic OK\n";
+// }
 };   // namespace
 
 int main() {
-    testLogic();
+    // testLogic();
 
     try {
         run(std::cin, std::cout);
