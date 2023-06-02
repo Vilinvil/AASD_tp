@@ -6,6 +6,7 @@
 // k. Требования: скорость выполнения запроса - O(log n).
 
 #include <assert.h>
+#include <functional>
 #include <iostream>
 #include <sstream>
 #include <stack>
@@ -83,7 +84,7 @@ class AVLTree {
     };
 
     // Взял из своего номера 2.2 для удаления
-    void post_order(void (*handler)(TreeNode *node)) {
+    void post_order(const std::function<void(TreeNode *)> &handler) {
         std::stack<TreeNode *> stack1;
         std::stack<TreeNode *> stack2;
         TreeNode *cur_node = root_;
@@ -308,7 +309,7 @@ void run(std::istream &input, std::ostream &output) {
                 " operation=" + std::to_string(operation));
         }
     }
-}
+};
 
 // void testLogic() {
 //     {
@@ -451,6 +452,7 @@ void run(std::istream &input, std::ostream &output) {
 //     //         throw std::runtime_error(e.what());
 //     //     }
 //     //     std::cout << "test 2 avltree compare OK\n";
+//     // }
 //     // }
 //     {
 //         std::stringstream in_str;
